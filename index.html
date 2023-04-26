@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lista de Estudiantes</title>
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Ysabeau:wght@300&display=swap" rel="stylesheet">
+    <!-- CSS -->
+    <link rel="stylesheet" href="./css/styles.css">
+
+</head>
+<body>
+    <header>
+        <h1>Creá tu Lista de Estudiantes</h1>
+    </header>
+    <main>
+        <section class="instrucciones">
+            <p>
+                Lo primero que vas a encontrar es un cuadradito donde tenés que colocar el nombre que querés asignarle a tu lista. Una vez hecho, apretás en crear y te va a aparecer
+                la opción de ir agregando estudiantes. Una vez hecho esto, le podrás asignar a cada estudiante una serie de notas que deberás separar por un espacio (sino no va a funcionar).
+                Luego, podrás ver todas las notas de cada uno, la suma de las mismas y el promedio resultante. Podés crear tantas listas como desees. Si querés volver a ver una lista, elegila por
+                su nombre de la lista que te aparece a la derecha y podrás agregar o quitar estudiantes y modificarles las notas.
+            </p>
+            <p>
+                Todo quedará guardado en la memoria de tu navegador. <b>SI LA LIMPIÁS, SE ELIMINARÁN TODOS LOS DATOS.</b>
+            </p>
+        </section>
+        <section class="estatico">
+            <aside class="estatico__crearLista">
+                <input type="text" value="" class="nombreLista" placeholder="Ingresa aquí el nombre de la lista que quieres crear">
+                <button type="button" class="crearLista">Crear Lista</button>
+            </aside>
+            <aside class="estatico__abrirLista">
+                <form action="seleccionarLista">
+                    <select class="listasDisponibles">
+                        <option selected disabled hidden> Seleccioná la lista que deseás ver</option>
+                    </select>
+                </form>
+                <button type="button" class="verLista">Ver Lista</button>
+            </aside>
+        </section>
+        <section class="contenedor">
+            
+        </section>
+    </main>
+    <footer>
+        <a href="https://paulo.ar/" target="_blank">Si te gustó y te sirvió el creador de listas, pasate por mi portfolio para ver el resto de mis proyectos.</a>
+        <a href="https://paulo.ar/" target="_blank">©Hecho por Paulo Rzeszut, 2023.</a>
+    </footer>
+    <script src="./main.js"></script>
+</body>
+</html>

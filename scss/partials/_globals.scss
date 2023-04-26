@@ -1,0 +1,109 @@
+@use './vars';
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+html {
+    font-size: 62.5%;
+    font-family: vars.$fuente;
+}
+
+header {
+    background-color: vars.$color-principal;
+    width: 100%;
+    padding: 2rem;
+    h1 {
+        font-size: 4rem;
+        color: vars.$color-claro;
+    }
+}
+
+main {
+    padding: 2rem;
+    background-color: vars.$color-secundario;
+    color: vars.$color-oscuro;
+    font-size: 2rem;
+    text-align: justify;
+    text-indent: 2rem;
+
+    b {
+        color: vars.$color-acento;
+        font-weight: bolder;
+    }
+}
+
+.estatico {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-around;
+    align-items: center;
+    flex-wrap: wrap;
+
+    &__crearLista, &__abrirLista {
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+    }
+}
+
+input {
+    margin: 1rem;
+    padding: 1rem;
+    border-radius: 5px;
+    outline: none;
+    border: 2px solid vars.$color-principal;
+    width: 25rem;
+    max-width: 90%;
+    font-family: vars.$fuente;
+    font-size: 2rem;
+    background-color: vars.$color-claro;
+    color: vars.$color-oscuro;
+}
+
+select {
+    font-family: vars.$fuente;
+    font-size: 2rem;
+    margin: 1rem;
+    padding: 1rem;
+    width: 25rem;
+    border: 2px solid vars.$color-principal;
+    border-radius: 5px;
+    background-color: vars.$color-claro;
+}
+
+button {
+    box-sizing: content-box;
+    font-family: vars.$fuente;
+    font-size: 2rem;
+    margin: 1rem;
+    padding: 1rem;
+    border: 2px solid transparent;
+    border-radius: 5px;
+    background-color: vars.$color-acento;
+    color: vars.$color-oscuro;
+    cursor: pointer;
+
+    &:hover {
+        font-weight: bolder;
+        border: 2px solid vars.$color-oscuro;
+    }
+}
+
+footer {
+    background-color: vars.$color-principal;
+    padding: 2rem;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+
+    a {
+        text-decoration: none;
+        font-size: 1.5rem;
+        color: vars.$color-claro;
+        margin: 1rem;
+    }
+}

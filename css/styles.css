@@ -1,0 +1,198 @@
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+html {
+  font-size: 62.5%;
+  font-family: "Ysabeau", sans-serif;
+}
+
+header {
+  background-color: #3D5A80;
+  width: 100%;
+  padding: 2rem;
+}
+header h1 {
+  font-size: 4rem;
+  color: #E0FBFC;
+}
+
+main {
+  padding: 2rem;
+  background-color: #98C1D9;
+  color: #293241;
+  font-size: 2rem;
+  text-align: justify;
+  text-indent: 2rem;
+}
+main b {
+  color: #EE6C4D;
+  font-weight: bolder;
+}
+
+.estatico {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-around;
+  align-items: center;
+  flex-wrap: wrap;
+}
+.estatico__crearLista, .estatico__abrirLista {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}
+
+input {
+  margin: 1rem;
+  padding: 1rem;
+  border-radius: 5px;
+  outline: none;
+  border: 2px solid #3D5A80;
+  width: 25rem;
+  max-width: 90%;
+  font-family: "Ysabeau", sans-serif;
+  font-size: 2rem;
+  background-color: #E0FBFC;
+  color: #293241;
+}
+
+select {
+  font-family: "Ysabeau", sans-serif;
+  font-size: 2rem;
+  margin: 1rem;
+  padding: 1rem;
+  width: 25rem;
+  border: 2px solid #3D5A80;
+  border-radius: 5px;
+  background-color: #E0FBFC;
+}
+
+button {
+  box-sizing: content-box;
+  font-family: "Ysabeau", sans-serif;
+  font-size: 2rem;
+  margin: 1rem;
+  padding: 1rem;
+  border: 2px solid transparent;
+  border-radius: 5px;
+  background-color: #EE6C4D;
+  color: #293241;
+  cursor: pointer;
+}
+button:hover {
+  font-weight: bolder;
+  border: 2px solid #293241;
+}
+
+footer {
+  background-color: #3D5A80;
+  padding: 2rem;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+footer a {
+  text-decoration: none;
+  font-size: 1.5rem;
+  color: #E0FBFC;
+  margin: 1rem;
+}
+
+.contenedor {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  overflow-x: auto;
+}
+.contenedor h2 {
+  font-size: 3.5rem;
+  text-align: center;
+  font-weight: bolder;
+}
+
+.formularioEstudiante {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-around;
+  align-items: center;
+  flex-wrap: wrap;
+}
+.formularioEstudiante input {
+  width: 35rem;
+}
+
+.tablaContenedor {
+  overflow-x: scroll;
+}
+
+table {
+  width: 80%;
+}
+table th {
+  background-color: #3D5A80;
+  color: #E0FBFC;
+  padding: 1rem;
+  text-align: center;
+}
+table td {
+  padding: 1rem;
+  text-align: center;
+}
+table tr:nth-child(even) {
+  background-color: #E0FBFC;
+}
+table .posible {
+  font-weight: bolder;
+}
+table .posible:hover {
+  background-color: #293241;
+  color: #E0FBFC;
+  border-radius: 3px;
+}
+table .imposible {
+  cursor: default;
+}
+table .imposible:hover {
+  font-weight: normal;
+}
+table .eliminar {
+  font-weight: bolder;
+  border-bottom: 2px solid transparent;
+}
+table .eliminar:hover {
+  border-bottom: 2px solid #293241;
+  background-color: #EE6C4D;
+}
+table button {
+  background-color: transparent;
+  border: none;
+  border-radius: 3px 3px 0 0;
+  transition: background-color 0.2s ease-in-out;
+}
+table button:hover {
+  border: none;
+  font-weight: auto;
+}
+
+@media screen and (min-width: 480px) {
+  input {
+    width: 48rem;
+  }
+  select {
+    width: auto;
+  }
+  .tablaContenedor {
+    overflow-x: auto;
+    display: flex;
+    justify-content: center;
+    text-align: center;
+  }
+}
+
+/*# sourceMappingURL=styles.css.map */

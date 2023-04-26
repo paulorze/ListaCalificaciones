@@ -1,0 +1,90 @@
+@use './vars';
+
+.contenedor {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    overflow-x: auto;
+
+    h2 {
+        font-size: 3.5rem;
+        text-align: center;
+        font-weight: bolder;
+    }
+}
+
+.formularioEstudiante {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-around;
+    align-items: center;
+    flex-wrap: wrap;
+
+    input {
+        width: 35rem;
+    }
+}
+
+.tablaContenedor {
+    overflow-x: scroll;
+}
+
+table {
+    width: 80%;
+    th {
+        background-color: vars.$color-principal;
+        color: vars.$color-claro;
+        padding: 1rem;
+        text-align: center;
+    }
+
+    td {
+        padding: 1rem;
+        text-align: center;
+    }
+
+    tr:nth-child(even) {
+        background-color: vars.$color-claro;
+    }
+
+    .posible {
+        font-weight: bolder;
+        
+        &:hover {
+            background-color: vars.$color-oscuro;
+            color: vars.$color-claro;
+            border-radius: 3px;
+        }
+    }
+
+    .imposible {
+        cursor: default;
+        &:hover {
+            font-weight: normal;
+        }
+    }
+
+
+    .eliminar {
+        font-weight: bolder;
+        border-bottom: 2px solid transparent;   
+
+        &:hover {
+            border-bottom: 2px solid vars.$color-oscuro;
+            background-color: vars.$color-acento;
+        }
+    }
+
+    button {
+        background-color: transparent;
+        border: none;
+        border-radius: 3px 3px 0 0;
+        transition: background-color 0.2s ease-in-out;
+
+        &:hover {
+            border: none;
+            font-weight: auto;
+        }
+    }
+}

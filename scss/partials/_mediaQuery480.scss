@@ -1,0 +1,16 @@
+@media screen and (min-width: 480px) {
+    input {
+        width: 48rem;
+    }
+    
+    select {
+        width: auto;
+    }
+
+    .tablaContenedor {
+        overflow-x: auto;
+        display: flex;
+        justify-content: center;
+        text-align: center;
+    }
+}
