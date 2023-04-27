@@ -139,15 +139,15 @@ const addObjeto = objeto => {
     })
 };
 
-const modifyObjeto = (key,newValue) => {
+const modifyObjeto = (key, newValue) => {
     const IDBData = getIDBData("readwrite");
-    // const request = IDBData.get(key);
-    // request.onsuccess = function(event) {
-    //     const data = event.target.result;
-    //     data.calificaciones = newValue;
-    //     IDBData.put(data);
-    IDBData.put(key,newValue);
-};
+    const request = IDBData.get(key);
+    request.onsuccess = function (event) {
+        const data = event.target.result;
+        data.calificaciones = newValue;
+        IDBData.put(data);
+    };
+  };
 
 const deleteObjeto = (key) => {
     const IDBData = getIDBData("readwrite");
@@ -203,7 +203,8 @@ const leerObjetos = ()=>{
                 if (botonModificar.className.includes("imposible") != true) {
                     console.log(parseInt(botonModificar.value));
                     console.log(tdNotas.textContent);
-                    modifyObjeto(parseInt(botonModificar.value),tdNotas.textContent);
+                    let newValue = tdNotas.textContent.split(",");
+                    modifyObjeto(parseInt(botonModificar.value),newValue);
                     botonModificar.classList.replace("posible","imposible");
                 }
             })
