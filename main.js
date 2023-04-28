@@ -6,16 +6,27 @@ const botonCrearLista = document.querySelector(`.crearLista`);
 const seleccionarLista = document.querySelector(`.listasDisponibles`);
 const botonVerLista = document.querySelector(`.verLista`);
 const contenedor = document.querySelector(`.contenedor`);
-let tablaInterior = ``;
 let IDBRequest;
 let numero;
-let ID;
+let llave;
+let table;
+
+const crearOpciones = ()=> {
+    seleccionarLista.innerHTML = `<option selected disabled hidden> Seleccioná la lista que deseás ver</option>`;
+    indexedDB.databases().then(databases => {
+        databases.forEach(database => {
+            seleccionarLista.innerHTML += `<option value="${database.name}">${database.name}</option>`;
+        });
+        }).catch(error => {
+        console.error("Failed to retrieve IndexedDB databases:", error);
+    });
+};
+crearOpciones();
 
 const creadorFragmento = ()=>{
     let container = document.createElement("div");
     let h2 = document.createElement("h2");
-    h2.textContent = `${nombreListaValue}`;
-    
+    h2.textContent = `${nombreListaValue}`;    
     let form = document.createElement("form");
     form.classList.add("formularioEstudiante");
     let nombreEstudiante = document.createElement("input");
@@ -41,10 +52,27 @@ const creadorFragmento = ()=>{
     form.appendChild(apellidoEstudiante);
     form.appendChild(notasEstudiante);
     form.appendChild(agregarEstudiante);
-
     container.appendChild(h2);
     container.appendChild(form);
 
+    agregarEstudiante.addEventListener("click", async ()=>{
+        let nombreValue = nombreEstudiante.value;
+        let apellidoValue = apellidoEstudiante.value;
+        let notasValue = notasEstudiante.value.split(" ");
+        let sumaValue = 0;
+        notasValue.forEach(nota => {
+            sumaValue += parseFloat(nota);
+        });
+        let promedioValue = (sumaValue / notasValue.length).toFixed(2);
+        let objetoEstudiante = {nombre: nombreValue,apellido:apellidoValue,calificaciones:notasValue,suma:sumaValue,promedio:promedioValue};
+        if (nombreValue == "" || apellidoValue == "") {
+            alert(`Por favor, ingrese el nombre y el apellido del estudiante.`);
+        } else {
+            await addObjeto(objetoEstudiante);
+            let nuevaFila = creadorFila(nombreValue,apellidoValue,notasValue,sumaValue,promedioValue,llave);
+            table.appendChild(nuevaFila);
+        };
+    });
     return container;
 };
 
@@ -71,29 +99,112 @@ const creadorTabla = ()=> {
     tablaHead.appendChild(thPromedio);
     tablaHead.appendChild(thBotones);
     tabla.appendChild(tablaHead);
-
     return tabla;
 }
 
-const crearOpciones = ()=> {
-    indexedDB.databases().then(databases => {
-        databases.forEach(database => {
-            seleccionarLista.innerHTML += `<option value="${database.name}">${database.name}</option>`;
-        });
-        }).catch(error => {
-        console.error("Failed to retrieve IndexedDB databases:", error);
+const creadorFila = (nombre,apellido,calificaciones,suma,promedio,llave)=> {
+    let tr = document.createElement("tr");
+    let tdNombre = document.createElement("td");
+    tdNombre.textContent = nombre;
+    let tdApellido = document.createElement("td");
+    tdApellido.textContent = apellido;
+    let tdNotas = document.createElement("td");
+    tdNotas.setAttribute("contenteditable","true");
+    tdNotas.textContent = calificaciones;
+    let tdSuma = document.createElement("td");
+    tdSuma.textContent = suma;
+    let tdPromedio = document.createElement("td");
+    tdPromedio.textContent = promedio;
+    let botonModificar = document.createElement("button");
+    let tdBotones = document.createElement("td");
+    botonModificar.setAttribute("type","button");
+    botonModificar.setAttribute("class","modificar imposible");
+    botonModificar.setAttribute("value",`${llave}`);
+    botonModificar.textContent = "Modificar";
+    let botonEliminar = document.createElement("button");
+    botonEliminar.setAttribute("type","button");
+    botonEliminar.setAttribute("class","eliminar");
+    botonEliminar.setAttribute("value",`${llave}`);
+    botonEliminar.textContent = "Eliminar";
+    tdBotones.appendChild(botonModificar);
+    tdBotones.appendChild(botonEliminar);
+    tr.appendChild(tdNombre);
+    tr.appendChild(tdApellido);
+    tr.appendChild(tdNotas);
+    tr.appendChild(tdSuma);
+    tr.appendChild(tdPromedio);
+    tr.appendChild(tdBotones);
+
+    tdNotas.addEventListener("keyup",()=>{
+        botonModificar.classList.replace("imposible","posible");
     });
+
+    botonModificar.addEventListener("click",async ()=>{
+        if (botonModificar.className.includes("imposible") != true) {
+            let key = parseInt(botonModificar.value);
+            let newValue = tdNotas.textContent.split(",");
+            let nuevaFila = await modifyObjeto(key,newValue);
+            tr.parentNode.replaceChild(nuevaFila, tr);
+            botonModificar.classList.replace("posible","imposible");
+        };
+    });
+
+    botonEliminar.addEventListener("click",()=>{
+        let confirmar = confirm(`¿Seguro que deseas eliminar este estudiante?`);
+        if (confirmar) {
+            deleteObjeto(parseInt(botonEliminar.value));
+            tr.parentNode.removeChild(tr);
+        };
+    });
+
+    return tr;
 };
 
-crearOpciones();
+const opcionesTabla = ()=> {
+    let div = document.createElement("div");
+    div.setAttribute("class","opcionesTabla");
+    let eliminarTabla = document.createElement("button");
+    eliminarTabla.setAttribute("type","button")
+    eliminarTabla.setAttribute("value",`${nombreListaValue}`);
+    eliminarTabla.innerText = `ELIMINAR TABLA`;
+    eliminarTabla.addEventListener("click",()=>{
+        let confirmar = confirm(`¿Está seguro que desea eliminar esta base de datos?`);
+        if (confirmar) {
+            let nuevoConfirmar = confirm(`Êsta acción es irreversible y se perderán todos los datos, ¿está seguro que desea continuar?`);
+            if (nuevoConfirmar) {
+                window.indexedDB.deleteDatabase(nombreListaValue);
+                contenedor.innerHTML = ``;
+                alert(`La base de datos ${nombreListaValue} ha sido eliminada satisfactoriamente`);
+                location.reload();
+            };
+        };
+    });
+    div.appendChild(eliminarTabla);
+    return div;
+};
 
 botonVerLista.addEventListener("click", async ()=>{
     nombreListaValue = seleccionarLista.options[seleccionarLista.selectedIndex].value;
-    await crearLista()
-    leerObjetos();
+    if (nombreListaValue != "Seleccioná la lista que deseás ver"){
+            await abrirLista();
+            leerObjetos();
+    } else {
+        alert(`Elija una tabla de las opciones. Si no hay ninguna, por favor primero cree una.`);
+    }
 });
 
-const crearLista = ()=>{
+botonCrearLista.addEventListener("click",async()=>{
+    nombreListaValue = nombreLista.value;
+    if (nombreListaValue == "Ingresa aquí el nombre de la lista que quieres crear" || nombreListaValue == "") {
+        alert(`Por favor, ingrese un nombre para su tabla.`);
+    } else {
+        await abrirLista();
+        leerObjetos();
+        crearOpciones();
+    }
+});
+
+const abrirLista = ()=>{
     return new Promise((resolve, reject) => {
         IDBRequest = window.indexedDB.open(`${nombreListaValue}`, 1);
         IDBRequest.addEventListener("success",()=> {
@@ -104,19 +215,14 @@ const crearLista = ()=>{
         });
         IDBRequest.addEventListener("upgradeneeded", () => {
             const db = IDBRequest.result;
-            db.createObjectStore("notas", {
-            autoIncrement: true,
+            const notasStore = db.createObjectStore("notas", {
+                keyPath: "id",
+                autoIncrement: true
             });
+            notasStore.createIndex("tituloIndex", "titulo", { unique: false });
         });
     });
 };
-
-botonCrearLista.addEventListener("click",async()=>{
-    nombreListaValue = nombreLista.value;
-    await crearLista();
-    leerObjetos();
-    crearOpciones();
-});
 
 const getIDBData = (mode)=> {
     const db = IDBRequest.result;
@@ -125,12 +231,33 @@ const getIDBData = (mode)=> {
     return objectStore;
 };
 
+const leerObjetos = ()=>{
+    const IDBData = getIDBData("readonly");
+    const cursor = IDBData.openCursor();
+    table = creadorTabla();
+    cursor.addEventListener("success",()=>{
+        if(cursor.result) {
+            let resultado = cursor.result.value;
+            llave = cursor.result.key;
+            let nuevaFila = creadorFila(resultado.nombre,resultado.apellido,resultado.calificaciones,resultado.suma,resultado.promedio,llave);
+            table.appendChild(nuevaFila);
+            cursor.result.continue();
+        } else {
+                contenedor.innerHTML = ``;
+                contenedor.appendChild(creadorFragmento());
+                contenedor.appendChild(table);
+                contenedor.appendChild(opcionesTabla());
+            };
+    });
+};
+
 const addObjeto = objeto => {
     const IDBData = getIDBData("readwrite");
     let addRequest = IDBData.add(objeto);
     return new Promise ((resolve,reject)=>{
         addRequest.onsuccess = ()=>{
             numero = addRequest.result;
+            llave = numero;
             resolve();
         };
         addRequest.onerror = ()=> {
@@ -142,153 +269,36 @@ const addObjeto = objeto => {
 const modifyObjeto = (key, newValue) => {
     const IDBData = getIDBData("readwrite");
     const request = IDBData.get(key);
-    request.onsuccess = function (event) {
-        const data = event.target.result;
-        data.calificaciones = newValue;
-        IDBData.put(data);
-    };
-  };
+    let suma = 0;
+    newValue.forEach(nota => {
+        suma += parseInt(nota)
+    });
+    let promedio = (suma / newValue.length).toFixed(2);
+    return new Promise ((resolve,reject)=>{
+        request.onsuccess = function (event) {
+            const data = event.target.result;
+            data.calificaciones = newValue;
+            data.suma = suma;
+            data.promedio = promedio;
+            IDBData.put(data);
+            let nuevaFila = creadorFila(data.nombre,data.apellido,data.calificaciones,data.suma,data.promedio,key);
+            resolve(nuevaFila);
+        };
+        request.onerror = ()=> {
+            reject();
+        }
+    })
+    
+};
 
 const deleteObjeto = (key) => {
     const IDBData = getIDBData("readwrite");
     IDBData.delete(key);
 };
 
-const leerObjetos = ()=>{
-    const IDBData = getIDBData("readonly");
-    const cursor = IDBData.openCursor();
-    let tabla = creadorTabla();
-    cursor.addEventListener("success",()=>{
-        if(cursor.result) {
-            let resultado = cursor.result.value;
-            ID = cursor.result.key;
-            let tableRow = document.createElement("tr");
-            let tdNombre = document.createElement("td");
-            tdNombre.textContent = `${resultado.nombre}`;
-            let tdApellido = document.createElement("td");
-            tdApellido.textContent = `${resultado.apellido}`;
-            let tdNotas = document.createElement("td");
-            tdNotas.setAttribute("contenteditable","true");
-            tdNotas.textContent = `${resultado.calificaciones}`;
-            let tdSuma = document.createElement("td");
-            tdSuma.textContent = `${resultado.suma}`;
-            let tdPromedio = document.createElement("td");
-            tdPromedio.textContent = `${resultado.promedio}`;
-            let tdBotones = document.createElement("td");
-            let botonModificar = document.createElement("button");
-            botonModificar.setAttribute("type","button");
-            botonModificar.setAttribute("class","modificar imposible");
-            botonModificar.setAttribute("value",`${ID}`);
-            botonModificar.textContent = "Modificar";
-            let botonEliminar = document.createElement("button");
-            botonEliminar.setAttribute("type","button");
-            botonEliminar.setAttribute("class","eliminar");
-            botonEliminar.setAttribute("value",`${ID}`);
-            botonEliminar.textContent = "Eliminar";
-            tdBotones.appendChild(botonModificar);
-            tdBotones.appendChild(botonEliminar);
-            tableRow.appendChild(tdNombre);
-            tableRow.appendChild(tdApellido);
-            tableRow.appendChild(tdNotas);
-            tableRow.appendChild(tdSuma);
-            tableRow.appendChild(tdPromedio);
-            tableRow.appendChild(tdBotones);
-            tabla.appendChild(tableRow);
-
-            tdNotas.addEventListener("keyup",()=>{
-                botonModificar.classList.replace("imposible","posible");
-            })
-
-            botonModificar.addEventListener("click",()=>{
-                if (botonModificar.className.includes("imposible") != true) {
-                    console.log(parseInt(botonModificar.value));
-                    console.log(tdNotas.textContent);
-                    let newValue = tdNotas.textContent.split(",");
-                    modifyObjeto(parseInt(botonModificar.value),newValue);
-                    botonModificar.classList.replace("posible","imposible");
-                }
-            })
-
-            botonEliminar.addEventListener("click",()=>{
-                let confirmar = confirm(`¿Seguro que deseas eliminar este estudiante?`);
-                if (confirmar) {
-                    deleteObjeto(parseInt(botonEliminar.value));
-                    tabla.removeChild(tableRow);
-                }
-            })
-            
-
-            cursor.result.continue();
-        } else {
-                contenedor.appendChild(creadorFragmento());
-                contenedor.appendChild(tabla);
-            };
-    });
-};
-
-contenedor.addEventListener("click",async function (event){
-    let confirmarEstudiante = event.target;
-    let nombreEstudiante = document.querySelector(`.nombreEstudiante`).value;
-    let apellidoEstudiante = document.querySelector(`.apellidoEstudiante`).value;
-    let notasEstudiante = document.querySelector(`.notasEstudiante`).value.split(" ");
-    let suma = 0;
-    notasEstudiante.forEach(nota => {
-        suma += parseFloat(nota);
-    });
-    let promedio = (suma / notasEstudiante.length).toFixed(2);
-    let objetoEstudiante = {nombre: `${nombreEstudiante}`,apellido:`${apellidoEstudiante}`,calificaciones:`${notasEstudiante}`,suma:`${suma}`,promedio:`${promedio}`};
-    if (confirmarEstudiante.matches(`.agregarEstudiante`)) {
-            await addObjeto(objetoEstudiante);
-            let tableRow = document.createElement("tr");
-            let tdNombre = document.createElement("td");
-            tdNombre.textContent = `${nombreEstudiante}`;
-            let tdApellido = document.createElement("td");
-            tdApellido.textContent = `${apellidoEstudiante}`;
-            let tdNotas = document.createElement("td");
-            tdNotas.setAttribute("contenteditable","true");
-            tdNotas.textContent = `${notasEstudiante}`;
-            let tdSuma = document.createElement("td");
-            tdSuma.textContent = `${suma}`;
-            let tdPromedio = document.createElement("td");
-            tdPromedio.textContent = `${promedio}`;
-            let tdBotones = document.createElement("td");
-            let botonModificar = document.createElement("button");
-            botonModificar.setAttribute("type","button");
-            botonModificar.setAttribute("class","modificar imposible");
-            botonModificar.setAttribute("value",`${numero}`);
-            botonModificar.textContent = "Modificar";
-            let botonEliminar = document.createElement("button");
-            botonEliminar.setAttribute("type","button");
-            botonEliminar.setAttribute("class","eliminar");
-            botonEliminar.setAttribute("value",`${numero}`);
-            botonEliminar.textContent = "Eliminar";
-            tdBotones.appendChild(botonModificar);
-            tdBotones.appendChild(botonEliminar);
-            tableRow.appendChild(tdNombre);
-            tableRow.appendChild(tdApellido);
-            tableRow.appendChild(tdNotas);
-            tableRow.appendChild(tdSuma);
-            tableRow.appendChild(tdPromedio);
-            tableRow.appendChild(tdBotones);
-            document.querySelector(`.tabla`).appendChild(tableRow);
-
-            tdNotas.addEventListener("keyup",()=>{
-                botonModificar.classList.replace("imposible","posible");
-            })
-
-            botonModificar.addEventListener("click",()=>{
-                if (botonModificar.className.includes("imposible") != true) {
-                    modifyObjeto({calificaciones: tdNotas.textContent},parseInt(numero));
-                    botonModificar.classList.replace("posible","imposible");
-                }
-            })
-
-            botonEliminar.addEventListener("click",()=>{
-                let confirmar = confirm(`¿Seguro que deseas eliminar este estudiante?`);
-                if (confirmar) {
-                    deleteObjeto(parseInt(botonEliminar.value));
-                    document.querySelector(`.tabla`).removeChild(tableRow);
-                }
-            })
-    };
-});
+// PARA PODER MODIFICAR UN OBJETO TUVE QUE CREAR UN PATH AL ID AL MISMO TIEMPO QUE SE CREA LA BASE DE DATOS.
+// UNA VEZ HECHO ESTO, SE PUEDE LLAMAR AL OBJETO POR SU KEY Y PEDIRLE QUE LO MODIFIQUE EN VEZ DE CREAR UNO NUEVO.
+// LA CREACIÓN DE HTML DE MANERA DINÁMICA DESDE JS NOS PERMITE COLOCARLE EVENTLISTENERS POR NOMBRE A CADA UNO A MEDIDA QUE SE CREAN.
+// DE ESTA MANERA, NO HACE FALTA DIFERENCIAR CADA UNO POR ID O VALUE Y SE FACILITA MUCHÍSIMO EL CÓDIGO.
+// LA UTILIZACIÓN DE PROMESAS JUNTO A ASYNC/AWAIT NOS PERMITE CREAR CREAR OBJETOS PARA INSERTAR EN EL HTML ESPERANDO EL TIEMPO NECESARIO PARA COMUNICARSE CON LA DB.
+// PARA DEVOLVER UN OBJETO HTML, DEBEMOS CREAR UNA VARIABLE QUE SEA IGUAL A LA FUNCIÓN QUE NOS RETORNA EL OBJETO DESEADO Y LUEGO LLAMAR A LA VARIABLE DENTRO DEL RETURN(VARIABLE).
