@@ -21,11 +21,15 @@
     flex-wrap: wrap;
 
     input {
-        width: 35rem;
+        width: 25rem;
     }
 }
 
 .tablaContenedor {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    text-align: center;
     overflow-x: scroll;
 }
 

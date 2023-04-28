@@ -6,6 +6,7 @@ const botonCrearLista = document.querySelector(`.crearLista`);
 const seleccionarLista = document.querySelector(`.listasDisponibles`);
 const botonVerLista = document.querySelector(`.verLista`);
 const contenedor = document.querySelector(`.contenedor`);
+const tablaContenedor = document.querySelector(`.tablaContenedor`);
 let IDBRequest;
 let numero;
 let llave;
@@ -71,6 +72,9 @@ const creadorFragmento = ()=>{
             await addObjeto(objetoEstudiante);
             let nuevaFila = creadorFila(nombreValue,apellidoValue,notasValue,sumaValue,promedioValue,llave);
             table.appendChild(nuevaFila);
+            nombreEstudiante.value= ``;
+            apellidoEstudiante.value = ``;
+            notasEstudiante.value = ``;
         };
     });
     return container;
@@ -244,9 +248,10 @@ const leerObjetos = ()=>{
             cursor.result.continue();
         } else {
                 contenedor.innerHTML = ``;
+                tablaContenedor.innerHTML = ``;
                 contenedor.appendChild(creadorFragmento());
-                contenedor.appendChild(table);
-                contenedor.appendChild(opcionesTabla());
+                tablaContenedor.appendChild(table);
+                tablaContenedor.appendChild(opcionesTabla());
             };
     });
 };

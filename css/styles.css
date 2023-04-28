@@ -46,6 +46,12 @@ main b {
   align-items: center;
 }
 
+.seleccionarLista {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
 input {
   margin: 1rem;
   padding: 1rem;
@@ -108,7 +114,6 @@ footer a {
   flex-direction: column;
   justify-content: center;
   align-items: center;
-  overflow-x: auto;
 }
 .contenedor h2 {
   font-size: 3.5rem;
@@ -124,10 +129,14 @@ footer a {
   flex-wrap: wrap;
 }
 .formularioEstudiante input {
-  width: 35rem;
+  width: 25rem;
 }
 
 .tablaContenedor {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  text-align: center;
   overflow-x: scroll;
 }
 
@@ -182,16 +191,21 @@ table button:hover {
 
 @media screen and (min-width: 480px) {
   input {
-    width: 48rem;
+    width: 40rem;
   }
   select {
     width: auto;
   }
+  .formularioEstudiante input {
+    width: 35rem;
+  }
+}
+@media screen and (min-width: 768px) {
   .tablaContenedor {
-    overflow-x: auto;
-    display: flex;
-    justify-content: center;
-    text-align: center;
+    overflow-x: unset;
+  }
+  table {
+    align-self: center;
   }
 }
 

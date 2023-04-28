@@ -1,16 +1,15 @@
 @media screen and (min-width: 480px) {
     input {
-        width: 48rem;
+        width: 40rem;
     }
     
     select {
         width: auto;
     }
 
-    .tablaContenedor {
-        overflow-x: auto;
-        display: flex;
-        justify-content: center;
-        text-align: center;
+    .formularioEstudiante {
+        input {
+            width: 35rem;
+        }
     }
 }
